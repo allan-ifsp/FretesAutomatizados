@@ -8,17 +8,22 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 
+from Package import Package
+
 service = Service(ChromeDriverManager().install())  # automatizar instalação do chromedriver
 driver = webdriver.Chrome(service=service)
+
+package = Package("5", "15", "17", "0.3", "32.5")
+backspace = '\b\b\b'
 
 driver.get("https://melhorenvio.com.br")
 driver.find_element('xpath', '//*[@id="from"]').send_keys('03071050')
 driver.find_element('xpath', '//*[@id="to"]').send_keys('13560544')
-driver.find_element(By.ID, 'height').send_keys('\b\b\b5')
-driver.find_element('xpath', '//*[@id="width"]').send_keys('\b\b\b15')
-driver.find_element('xpath', '//*[@id="length"]').send_keys('\b\b\b17')
-driver.find_element('xpath', '//*[@id="weight"]').send_keys('\b\b\b0,3')
-driver.find_element('xpath', '//*[@id="insuranceValue"]').send_keys('32,50')
+driver.find_element(By.ID, 'height').send_keys(backspace + package.get_height())
+driver.find_element('xpath', '//*[@id="width"]').send_keys(backspace + package.get_width())
+driver.find_element('xpath', '//*[@id="length"]').send_keys(backspace + package.get_length())
+driver.find_element('xpath', '//*[@id="weight"]').send_keys(backspace + package.get_weight())
+driver.find_element('xpath', '//*[@id="insuranceValue"]').send_keys(backspace + package.get_price())
 
 # Necessario aceitar os cookies para poder clicar no botao de calular
 driver.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/div[2]/div[2]/div[2]/div[1]/button').click()
@@ -42,8 +47,6 @@ df = df.drop(df.columns[5], axis=1)  # deletar a ultima coluna, um link de cadas
 print(html_tabela)
 print(dfs)
 count = 0
-# for df in dfs:
-#     df.to_excel(f'output{count}.xlsx', index=False)
-#     count += 1
-df.to_excel(f'output.xlsx', index=False)
+
+df.to_excel('output.xlsx', index=False)
 driver.close()
